@@ -1,0 +1,3 @@
+# CloudNotes backend
+
+nodejs , mongoDB

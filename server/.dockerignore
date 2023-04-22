@@ -1,0 +1,4 @@
+.env
+.github
+node_modules
+logs
