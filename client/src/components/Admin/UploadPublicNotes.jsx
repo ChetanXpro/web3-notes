@@ -12,29 +12,27 @@ import usePrivateApis from "../../hooks/usePrivateApis";
 import { nanoid } from "nanoid";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
-
 import {
   useToast,
   Button as CButton,
   Divider as CDivider,
   Text,
   useColorMode,
-  
 } from "@chakra-ui/react";
 
 import { CloudUploadOutlined, SearchOutlined } from "@ant-design/icons";
 
-import useAzureblob from "../../hooks/useAzureblob";
+
 import UploadedFiles from "../Upload/UploadedFiles";
 
 const UploadPublicNotes = () => {
-  const { publicContainerClient } = useAzureblob();
+ 
   const [files, setFiles] = useState(null);
   const [fileData, setFileData] = useState([]);
   const [uploadLoading, setUploadLoading] = useState(false);
   const apiPrivateInstance = useAxiosPrivate();
   const [selectedUniversity, setSelectedUniversity] = useState("");
- 
+
   const [selectedSubject, setSelectedSubject] = useState("");
   const { addFav } = usePrivateApis();
   const toast = useToast({ position: "top" });
@@ -52,23 +50,11 @@ const UploadPublicNotes = () => {
       // Rename file
       const nameChanged = new File([file], `${file.name}--${uniqueId}${ext}`);
 
-      const blockBlobClient = publicContainerClient.getBlockBlobClient(
-        nameChanged.name
-      );
-
-      const azurePromise = await blockBlobClient.uploadBrowserData(nameChanged);
-
-      // const apiCallPromise = await apiPrivateInstance.post("/note", {
-      //   collectionName: selectedCollection,
-      //   noteName: file.name,
-      //   url: `https://duweb.blob.core.windows.net/pdf/${nameChanged.name}`,
-      //   blobName: nameChanged.name,
-      //   fileSize: file.size,
-      // });
+     
 
       const apiCallPromise = await apiPrivateInstance.post(`/admin/addnote`, {
         university: selectedUniversity,
-      
+
         subject: selectedSubject,
         name: file.name,
         url: `https://duweb.blob.core.windows.net/public/${nameChanged.name}`,
@@ -114,11 +100,7 @@ const UploadPublicNotes = () => {
     try {
       const dbData = [];
 
-      if (
-        !selectedUniversity ||
-       
-        !selectedSubject
-      )
+      if (!selectedUniversity || !selectedSubject)
         return toast({
           title: "Please select a folder to upload files",
 
@@ -208,8 +190,7 @@ const UploadPublicNotes = () => {
             options={universityList}
           />
         </div>
-       
-       
+
         <div>
           <Text>2. Search your Subject</Text>
           <Select

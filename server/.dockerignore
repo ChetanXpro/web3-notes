@@ -1,4 +1,6 @@
-.env
-.github
 node_modules
-logs
+.env
+Dockerfile
+.dockerignore
+.git
+.gitignore

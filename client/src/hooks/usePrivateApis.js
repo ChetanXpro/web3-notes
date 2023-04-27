@@ -1,11 +1,10 @@
 import { useToast } from "@chakra-ui/react";
 import React, { useState } from "react";
 import useAxiosPrivate from "./useAxiosPrivate";
-import useAzureblob from "./useAzureblob";
 
 const usePrivateApis = () => {
   const apiPrivateInstance = useAxiosPrivate();
-  const { pdfContainerClient } = useAzureblob();
+
   const toast = useToast({ position: "top" });
 
   const getCollection = async () => {

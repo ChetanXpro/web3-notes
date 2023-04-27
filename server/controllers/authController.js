@@ -4,7 +4,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
 
-
 import { ethers } from "ethers";
 
 const login = asyncHandler(async (req, res) => {
@@ -30,7 +29,7 @@ const login = asyncHandler(async (req, res) => {
       id: foundUser.id,
       role: foundUser.roles,
     },
-    process.env.ACCESS_TOKEN_SECRET,
+    process.env.ACCESS_TOKEN_SECRET || "dfdfdfdfd",
     { expiresIn: "24h" }
   );
 
@@ -38,7 +37,7 @@ const login = asyncHandler(async (req, res) => {
     {
       username: foundUser.username,
     },
-    process.env.REFRESH_TOKEN_SECRET,
+    process.env.REFRESH_TOKEN_SECRET || "dfdfdfdfd",
     { expiresIn: "24h" }
   );
 
@@ -61,19 +60,15 @@ const login = asyncHandler(async (req, res) => {
   });
 });
 
-
-
 const walletLogin = asyncHandler(async (req, res) => {
   const cookies = req.cookies;
- 
-  const { address, signature,message} = req.body;
+
+  const { address, signature, message } = req.body;
   if (!address || !signature || !message) {
     res.status(400).json({ message: "All field are required" });
   }
 
   const foundUser = await User.findOne({ address }).exec();
-
-
 
   if (!foundUser || !foundUser.active) {
     return res.status(401).json({ message: "Unauthorized" });
@@ -83,20 +78,18 @@ const walletLogin = asyncHandler(async (req, res) => {
 
   // console.log('Ether----------',ethers);
 
-  const recoveredAdrr = ethers.verifyMessage(message,signature)
+  const recoveredAdrr = ethers.verifyMessage(message, signature);
 
-
-
- if(recoveredAdrr.toLowerCase() !== foundUser.address.toLowerCase()){
-  return res.status(401).json({ message: "Unauthorized" });
- }
+  if (recoveredAdrr.toLowerCase() !== foundUser.address.toLowerCase()) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
 
   const accessToken = jwt.sign(
     {
       id: foundUser.id,
       role: foundUser.roles,
     },
-    process.env.ACCESS_TOKEN_SECRET || 'jidjfijijdifjdifjidfjidfd',
+    process.env.ACCESS_TOKEN_SECRET || "dfdfdfdfd",
     { expiresIn: "24h" }
   );
 
@@ -104,7 +97,7 @@ const walletLogin = asyncHandler(async (req, res) => {
     {
       username: foundUser.username,
     },
-    process.env.REFRESH_TOKEN_SECRET,
+    process.env.REFRESH_TOKEN_SECRET || "dfdfdfdfd",
     { expiresIn: "24h" }
   );
 
@@ -137,7 +130,7 @@ const refresh = asyncHandler(async (req, res) => {
 
   jwt.verify(
     refreshToken,
-    process.env.REFRESH_TOKEN_SECRET,
+    process.env.REFRESH_TOKEN_SECRET || "dfdfdfdfd",
     asyncHandler(async (err, decoded) => {
       if (err) return res.status(403).json({ message: "Forbidden" });
 
@@ -154,7 +147,7 @@ const refresh = asyncHandler(async (req, res) => {
             roles: foundUser.roles,
           },
         },
-        process.env.ACCESS_TOKEN_SECRET,
+        process.env.ACCESS_TOKEN_SECRET || "dfdfdfdfd",
         { expiresIn: "15m" }
       );
 

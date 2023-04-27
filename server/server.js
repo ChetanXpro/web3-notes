@@ -13,7 +13,7 @@ import connectDB from "./config/dbConnecton.js";
 import logger from "./config/logger.js";
 import corsOption from "./config/corsOptons.js";
 
-const port = process.env.PORT || 3500;
+const port = process.env.PORT || 5000;
 
 app.use("*", cors(corsOption));
 
@@ -25,6 +25,10 @@ import noteRoutes from "./routes/noteRoutes.js";
 import publicNotesRoute from "./routes/publicNotesRoute.js";
 import authRoutes from "./routes/authRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+
+app.get("/", (req, res) => {
+  res.send("API WORKING FINE !!!!!");
+});
 
 app.use("/user", userRoutes);
 app.use("/note", noteRoutes);

@@ -16,10 +16,8 @@ import {
 
 import { CloudUploadOutlined, SearchOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import useAzureblob from "../../hooks/useAzureblob";
 
 const Upload = () => {
-  const { pdfContainerClient } = useAzureblob();
   const { colorMode } = useColorMode();
   const apiPrivateInstance = useAxiosPrivate();
   const [files, setFiles] = useState(null);
