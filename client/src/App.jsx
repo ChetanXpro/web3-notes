@@ -1,3 +1,4 @@
+import "./init.js";
 import "./App.css";
 
 import { Navigate, Route, Routes } from "react-router-dom";

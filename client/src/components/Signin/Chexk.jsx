@@ -204,8 +204,8 @@ const Login = () => {
     console.log("Account: ", account);
 
     const payload = {
-      address: currentAccount.toLocaleLowerCase(),
-      signature: signature,
+      address: currentAccount,
+      signature,
       message,
     };
     walletMutate(payload);
@@ -240,3 +240,7 @@ const Login = () => {
 };
 
 export default Login;
+
+// {"address":"0xD52482c8D49B3AA4E98CFD5AFD4183ac7CE5e7d1","signature":"0x80c1bfcfe15bde00be1e173f73ac630cea405ce717388ca6f25d68f69d788ebf10c19f0a7e16f269a3c7062d80fc68b8989d8345e701eb715da6d56083a1a08d1b","message":"Sign this message to log in to our app"}
+
+// {"address":"0xd52482c8d49b3aa4e98cfd5afd4183ac7ce5e7d1","signature":"0x80c1bfcfe15bde00be1e173f73ac630cea405ce717388ca6f25d68f69d788ebf10c19f0a7e16f269a3c7062d80fc68b8989d8345e701eb715da6d56083a1a08d1b","message":"Sign this message to log in to our app"}
