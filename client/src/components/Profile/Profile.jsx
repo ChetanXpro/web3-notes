@@ -36,13 +36,11 @@ const Profile = () => {
   const setFav = () => {
     // setSelectedArea('favourite')
     selectedArea.current = "favourite";
-    
   };
 
   const setFolder = () => {
     selectedArea.current = "folder";
   };
-
 
   return (
     <div className="flex flex-col relative  items-center">
@@ -61,7 +59,7 @@ const Profile = () => {
             textAlign="center"
             fontSize={"2xl"}
             className={`font-sans rounded ${
-              selectedArea.current === "folder" ? "bg-slate-800" : ""
+              selectedArea.current === "folder" ? "bg-slate-400" : ""
             }`}
           >
             Your Folders
@@ -81,7 +79,7 @@ const Profile = () => {
             textAlign="center"
             fontSize={"2xl"}
             className={`font-sans rounded  ${
-              selectedArea.current === "favourite" ? "bg-slate-800" : ""
+              selectedArea.current === "favourite" ? "bg-slate-400" : ""
             } `}
           >
             Favourite
@@ -132,7 +130,7 @@ const Profile = () => {
         </div>
       ) : (
         // <div className="flex items-center   w-full justify-center mt-14 lg:ml-6 md:ml-14 xl:ml-6 lg:p-4 lg:justify-start md:justify-start xl:justify-start flex-wrap md:mt-14 lg:mt-14 xl:mt-12 ">
-          <Favourite />
+        <Favourite />
         // </div>
       )}
     </div>

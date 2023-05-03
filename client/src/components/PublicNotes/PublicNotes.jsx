@@ -43,17 +43,13 @@ const PublicNotes = () => {
     search(payload);
   };
 
-  // const addtoFav = async (id) => {
-  //   console.log("Called");
-  //   add(id);
-  // };
   return (
     <div className="w-full">
-      <div className="flex items-center justify-center">
+      <div className="flex  items-center justify-center">
         <Heading mt={"2"}>Search Your University Notes</Heading>
       </div>
-      <div className=" flex flex-col md:flex-row lg:flex-row items-center mt-6 gap-6 justify-center">
-        <div>
+      <div className=" flex  flex-col md:flex-row lg:flex-row items-center mt-20 gap-12 justify-center">
+        <div className="flex flex-col gap-2">
           <Text>1. Search your University</Text>
           <Select
             showSearch
@@ -75,9 +71,7 @@ const PublicNotes = () => {
           />
         </div>
 
-
-
-        <div>
+        <div className="flex flex-col gap-2">
           <Text>2. Search your Subject</Text>
           <Select
             showSearch
@@ -104,8 +98,7 @@ const PublicNotes = () => {
           Search Notes
         </Button>
       </div>
-      <div className="flex flex-wrap">
-
+      <div className="flex p-3 mt-10 flex-wrap">
         {foundNotes &&
           foundNotes.notes.map((n) => (
             <NotesCard

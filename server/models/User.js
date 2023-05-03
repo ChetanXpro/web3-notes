@@ -6,19 +6,10 @@ const schema = new Schema(
       type: String,
       require: true,
     },
-    address:{
-      type:String,
-    },
-    email: {
+    address: {
       type: String,
-
-      require: true,
     },
-    password: {
-      type: String,
 
-      require: true,
-    },
     roles: {
       type: String,
       enum: ["student", "teacher", "other", "admin"],

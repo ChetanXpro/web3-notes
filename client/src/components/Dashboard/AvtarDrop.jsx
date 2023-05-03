@@ -4,7 +4,7 @@ import { useAtom } from "jotai";
 
 import React, { useEffect, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import { user } from "../../atoms/status";
+
 import Discord from "../../assets/discord.png";
 import WhiteDiscord from "../../assets/whitedis.png";
 import logo from "../../assets/nobg.png";
@@ -13,7 +13,7 @@ import { AntDesignOutlined, CloseOutlined } from "@ant-design/icons";
 
 const AvtarDrop = ({ setAvtarDrop }) => {
   const { colorMode, toggleColorMode } = useColorMode();
-  const [userData, setUser] = useAtom(user);
+
   const navigate = useNavigate();
 
   const logout = () => {

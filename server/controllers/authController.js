@@ -6,64 +6,11 @@ import asyncHandler from "express-async-handler";
 
 import { ethers } from "ethers";
 
-const login = asyncHandler(async (req, res) => {
-  const cookies = req.cookies;
-  console.log(req.body);
-  const { email, password } = req.body;
-  if (!email || !password) {
-    res.status(400).json({ message: "All field are required" });
-  }
-
-  const foundUser = await User.findOne({ email }).exec();
-
-  if (!foundUser || !foundUser.active) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-
-  const match = await bcrypt.compare(password, foundUser.password);
-
-  if (!match) return res.status(401).json({ message: "Unauthorized" });
-
-  const accessToken = jwt.sign(
-    {
-      id: foundUser.id,
-      role: foundUser.roles,
-    },
-    process.env.ACCESS_TOKEN_SECRET || "dfdfdfdfd",
-    { expiresIn: "24h" }
-  );
-
-  const newRefreshToken = jwt.sign(
-    {
-      username: foundUser.username,
-    },
-    process.env.REFRESH_TOKEN_SECRET || "dfdfdfdfd",
-    { expiresIn: "24h" }
-  );
-
-  if (cookies?.jwt) {
-    res.clearCookie("jwt", { httpOnly: true, sameSite: "none", secure: true });
-  }
-
-  res.cookie("jwt", newRefreshToken, {
-    path: "/",
-    maxAge: 100000,
-    httpOnly: true,
-    sameSite: "lax",
-  });
-
-  res.json({
-    email: foundUser.email,
-    name: foundUser.name,
-    role: foundUser.roles,
-    accessToken,
-  });
-});
-
 const walletLogin = asyncHandler(async (req, res) => {
   const cookies = req.cookies;
 
   const { address, signature, message } = req.body;
+
   if (!address || !signature || !message) {
     res.status(400).json({ message: "All field are required" });
   }
@@ -73,10 +20,6 @@ const walletLogin = asyncHandler(async (req, res) => {
   if (!foundUser || !foundUser.active) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-
-  // const match = await bcrypt.compare(password, foundUser.password);
-
-  // console.log('Ether----------',ethers);
 
   const recoveredAdrr = ethers.verifyMessage(message, signature);
 
@@ -93,68 +36,17 @@ const walletLogin = asyncHandler(async (req, res) => {
     { expiresIn: "24h" }
   );
 
-  const newRefreshToken = jwt.sign(
-    {
-      username: foundUser.username,
-    },
-    process.env.REFRESH_TOKEN_SECRET || "dfdfdfdfd",
-    { expiresIn: "24h" }
-  );
-
   if (cookies?.jwt) {
     res.clearCookie("jwt", { httpOnly: true, sameSite: "none", secure: true });
   }
 
-  res.cookie("jwt", newRefreshToken, {
-    path: "/",
-    maxAge: 100000,
-    httpOnly: true,
-    sameSite: "lax",
-  });
-
   res.json({
-    email: foundUser.email,
-    name: foundUser.name,
     role: foundUser.roles,
     accessToken,
   });
 });
 
 // !Refresh
-const refresh = asyncHandler(async (req, res) => {
-  const cookies = req.cookies;
-
-  if (!cookies?.jwt) return res.status(401).json({ message: "Unauthorized" });
-
-  const refreshToken = cookies.jwt;
-
-  jwt.verify(
-    refreshToken,
-    process.env.REFRESH_TOKEN_SECRET || "dfdfdfdfd",
-    asyncHandler(async (err, decoded) => {
-      if (err) return res.status(403).json({ message: "Forbidden" });
-
-      const foundUser = await User.findOne({
-        username: decoded.username,
-      }).exec();
-
-      if (!foundUser) return res.status(401).json({ message: "Unauthorized" });
-
-      const accessToken = jwt.sign(
-        {
-          UserInfo: {
-            username: foundUser.username,
-            roles: foundUser.roles,
-          },
-        },
-        process.env.ACCESS_TOKEN_SECRET || "dfdfdfdfd",
-        { expiresIn: "15m" }
-      );
-
-      res.json({ accessToken });
-    })
-  );
-});
 
 //Logout
 
@@ -180,8 +72,7 @@ const logout = asyncHandler(async (req, res) => {
 });
 
 export default {
-  login,
   walletLogin,
-  refresh,
+
   logout,
 };

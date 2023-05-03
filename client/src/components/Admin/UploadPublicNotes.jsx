@@ -2,6 +2,7 @@ import { Heading } from "@chakra-ui/react";
 import { Select } from "antd";
 import React, { useState } from "react";
 import { useMutation, useQuery } from "react-query";
+import { upload } from "@spheron/browser-upload";
 import {
   getUniversityDetails,
   getUniversityList,
@@ -22,11 +23,9 @@ import {
 
 import { CloudUploadOutlined, SearchOutlined } from "@ant-design/icons";
 
-
 import UploadedFiles from "../Upload/UploadedFiles";
 
 const UploadPublicNotes = () => {
- 
   const [files, setFiles] = useState(null);
   const [fileData, setFileData] = useState([]);
   const [uploadLoading, setUploadLoading] = useState(false);
@@ -47,47 +46,41 @@ const UploadPublicNotes = () => {
       const uniqueId = nanoid();
       const ext = file.name.slice(-5);
 
+      const token = await apiPrivateInstance.get("/note/initiate-upload");
+
       // Rename file
+      console.log(token.data.uploadToken);
       const nameChanged = new File([file], `${file.name}--${uniqueId}${ext}`);
 
-     
+      const res = await upload([nameChanged], {
+        token: token.data.uploadToken,
+      });
 
-      const apiCallPromise = await apiPrivateInstance.post(`/admin/addnote`, {
+      const apiCallPromise = await apiPrivateInstance.post("/admin/addnote", {
         university: selectedUniversity,
-
         subject: selectedSubject,
         name: file.name,
-        url: `https://duweb.blob.core.windows.net/public/${nameChanged.name}`,
+        url: `${res.protocolLink}/${nameChanged.name}`,
+
         fileSize: file.size,
       });
 
-      if (apiCallPromise.status === 200) {
-        toast({
-          title: `${file.name} Uploaded successfuly`,
-
-          status: "success",
-          duration: 2000,
-          isClosable: true,
-        });
-      } else {
-        toast({
-          title: `Something went wrong`,
-
-          status: "error",
-          duration: 2000,
-          isClosable: true,
-        });
-      }
-
+      setIsUploading(true);
       setFiles([]);
+      toast({
+        title: `${file.name} Uploaded successfuly`,
+
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
 
       setFileData([]);
       setUploadLoading(false);
     } catch (error) {
-      console.log(error);
       setUploadLoading(false);
       toast({
-        title: "Files not uploaded",
+        title: "Files not uploaded !!",
 
         status: "error",
         duration: 2000,
@@ -100,9 +93,9 @@ const UploadPublicNotes = () => {
     try {
       const dbData = [];
 
-      if (!selectedUniversity || !selectedSubject)
+      if (!selectedSubject)
         return toast({
-          title: "Please select a folder to upload files",
+          title: "Please select a Subject to upload files",
 
           status: "error",
           duration: 2000,
@@ -124,15 +117,15 @@ const UploadPublicNotes = () => {
       // lOOP OVER MULTIPLE INPUT FILE
       setUploadLoading(true);
       for (const file of files) {
-        promises.push(SendFiles(file));
+        await SendFiles(file);
       }
 
-      const nestedPromises = await Promise.allSettled(promises);
       setUploadLoading(false);
     } catch (error) {
       console.log(error);
     }
   };
+
   const handleClick = () => {
     document.getElementById("selected").click();
   };
@@ -295,7 +288,7 @@ const UploadPublicNotes = () => {
             </CButton>
           </div>
         </div>
-        <div className="mt-4 w-full  items-center flex flex-col  gap-2 justify-start">
+        <div className="mt-4 w-full   items-center flex flex-col  gap-2 justify-start">
           {fileData &&
             fileData.map((item) => (
               <UploadedFiles

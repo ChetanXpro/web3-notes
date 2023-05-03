@@ -41,9 +41,6 @@ const Upload = () => {
     getColllection();
   }, []);
 
-  const API_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXBsb3ltZW50SWQiOiI2NDQ0MTZjMDIwMjc3YTAwMTJlODk5NzYiLCJzaW5nbGVEZXBsb3ltZW50Ijp0cnVlLCJwYXlsb2FkU2l6ZSI6NTI0Mjg4MCwicGFyYWxsZWxVcGxvYWRDb3VudCI6NSwiaWF0IjoxNjgyMTgzODcyLCJleHAiOjE2ODIxODQ0NzIsImlzcyI6Ind3dy5zcGhlcm9uLm5ldHdvcmsifQ.LZnIr3LYHyZEv7r04t4JZoqNXfSVmEmYp345GWVK_pY";
-
   const createCollection = async () => {
     try {
       if (!collectionName) {
@@ -183,9 +180,9 @@ const Upload = () => {
 
   return (
     <div className="   flex items-center h-[calc(100vh)] w-full  justify-center  ">
-      <div className="  w-full lg:w-full     flex flex-col items-center justify-start h-full p-10 border-t-0  ">
-        <div className="flex w-full h-full md:mb-4 flex-1 -mb-6  flex-col  md:flex-row lg:flex-row xl:flex-row  ">
-          <div className="flex flex-1 mt-20 lg:mt-0 xl:mt-0 flex-col   h-full ">
+      <div className="  w-full lg:w-full     flex flex-col items-center justify-start h-full p-10 border-t-0 gap-3   ">
+        <div className="flex w-full h-full  md:mb-4 flex-1 -mb-6  flex-col  md:flex-row lg:flex-row xl:flex-row  ">
+          <div className="flex  flex-1 mt-20 lg:mt-0 xl:mt-0 flex-col   h-full ">
             <div className="w-full flex flex-col items-center  font-sans">
               <Text fontSize={"md"}>Create a Folder to upload files.</Text>
 
@@ -218,7 +215,7 @@ const Upload = () => {
           <div className="block">
             <CDivider className="bg-white" orientation="vertical" />
           </div>
-          <div className="   flex flex-1 font-sans mt-20 mb-10 md:mb-0 lg:mb-0 xl:mb-0 lg:mt-0  flex-col  items-center">
+          <div className="   flex flex-1 font-sans mt-20  md:mb-0 lg:mb-0 xl:mb-0 lg:mt-0  flex-col  items-center">
             <div className="w-full flex  flex-col items-center  font-sans ">
               <Text mb={"5"}>Select a folder before uploading files</Text>
 
@@ -240,12 +237,12 @@ const Upload = () => {
           </div>
         </div>
         <Divider className="bg-gray-200" />
-        <div className="flex font-sans flex-1 items-center  flex-col mt-10  ">
+        <div className="flex font-sans flex-1  items-center  flex-col   ">
           <Text h={"1"} mb="4" textAlign="center">
             Check your profile after uploading files
           </Text>
 
-          <div className="flex flex-col  gap-4 lg:gap-10 items-center">
+          <div className="flex flex-col  gap-4 lg:gap-5 items-center">
             <div className="">
               <input
                 id="selected"
@@ -301,7 +298,7 @@ const Upload = () => {
             <div>
               <div
                 onClick={handleClick}
-                className={`h-[8rem] cursor-pointer w-[16rem] border-2 flex items-center text-center justify-center  border-dashed ${
+                className={`h-[8rem] cursor-pointer w-[16rem]  border-2 flex items-center text-center justify-center  border-dashed ${
                   colorMode === "dark" ? "border-gray-400" : "border-gray-600"
                 }`}
               >

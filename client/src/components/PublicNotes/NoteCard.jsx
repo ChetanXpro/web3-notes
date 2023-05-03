@@ -46,6 +46,8 @@ const NotesCard = ({
   const DOCUMENTS = [".doc", "docx", ".txt"];
   const PDF = [".pdf"];
 
+  console.log(name);
+
   const EXT = name.slice(-4).toLowerCase();
   return (
     <div

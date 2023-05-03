@@ -1,29 +1,27 @@
 import { Button, Flex, Input, Text } from "@chakra-ui/react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { FormControl, FormErrorMessage } from "@chakra-ui/react";
 import { login, signup } from "../../Api/api";
-
+import SocialLogin from "@biconomy/web3-auth";
+import "@biconomy/web3-auth/dist/src/style.css";
+import { ethers } from "ethers";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 // import useAuth from "../hooks/useAuth";
 import { useToast } from "@chakra-ui/react";
 import { useEffect } from "react";
+import { Tag } from "antd";
 
 const Signup = () => {
-  const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
-  const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
-  const [email, setEmail] = useState("");
+  const [socialLoginSDK, setSocialLoginSDK] = useState(null);
+  const [provider, setProvider] = useState();
+  const [account, setAccount] = useState();
   const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
-  const [validName, setValidName] = useState(false);
+
   const [success, setSuccess] = useState(false);
   const from = location?.state?.from?.pathname || "/";
   const navigate = useNavigate();
   const toast = useToast({ position: "top" });
-
-  useEffect(() => {
-    setValidName(PWD_REGEX.test(password));
-  }, [password]);
 
   const { isLoading, isError, error, mutate } = useMutation(signup, {
     onSuccess: (data) => {
@@ -45,13 +43,112 @@ const Signup = () => {
     },
   });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const payload = {
-      name: name,
-      email: email,
-      password,
+  const connectWeb3 = useCallback(async () => {
+    if (typeof window === "undefined") return;
+    console.log("socialLoginSDK: ", socialLoginSDK);
+    console.log("socialLoginSDK Provider: ", socialLoginSDK?.provider);
+    if (socialLoginSDK?.provider) {
+      const web3Provider = new ethers.providers.Web3Provider(
+        socialLoginSDK.provider
+      );
+
+      setProvider(web3Provider);
+
+      const accounts = await web3Provider.listAccounts();
+
+      setAccount(accounts[0]);
+
+      return;
+    }
+    if (socialLoginSDK) {
+      socialLoginSDK.showWallet();
+      // This is another example
+      return socialLoginSDK;
+    }
+    const sdk = new SocialLogin();
+    await sdk.init({
+      chainId: ethers.utils.hexValue(80001),
+    });
+    setSocialLoginSDK(sdk);
+    sdk.showWallet();
+    return socialLoginSDK;
+  }, [socialLoginSDK]);
+
+  // Close wallet if already login
+  useEffect(() => {
+    console.log("hidelwallet");
+    if (socialLoginSDK && socialLoginSDK.provider) {
+      socialLoginSDK.hideWallet();
+    }
+  }, [account, socialLoginSDK]);
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      if (account) {
+        clearInterval(interval);
+      }
+      if (socialLoginSDK?.provider && !account) {
+        connectWeb3();
+      }
+    }, 1000);
+    return () => {
+      clearInterval(interval);
     };
+  }, [account, connectWeb3, socialLoginSDK]);
+
+  // desconnect web3
+  const disconnectWeb3 = async () => {
+    if (!socialLoginSDK || !socialLoginSDK.web3auth) {
+      console.error("Web3Modal not initialized.");
+      return;
+    }
+    await socialLoginSDK.logout();
+    socialLoginSDK.hideWallet();
+    setProvider(undefined);
+    setAccount(undefined);
+  };
+
+  useEffect(() => {
+    console.log("hidelwallet");
+    if (socialLoginSDK && socialLoginSDK.provider) {
+      socialLoginSDK.hideWallet();
+    }
+  }, [account, socialLoginSDK]);
+
+  useEffect(() => {
+    console.log(socialLoginSDK);
+    if (socialLoginSDK?.provider) return;
+    connectWeb3();
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      if (account) {
+        clearInterval(interval);
+      }
+      if (socialLoginSDK?.provider && !account) {
+        connectWeb3();
+      }
+    }, 1000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [account, connectWeb3, socialLoginSDK]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const provider = new ethers.providers.Web3Provider(socialLoginSDK.provider);
+
+    const currentAccount = await provider.getSigner().getAddress();
+
+    console.log("Account: ", account);
+
+    const payload = {
+      address: currentAccount.toLocaleLowerCase(),
+      name: name,
+    };
+
     mutate(payload);
   };
   return (
@@ -64,6 +161,31 @@ const Signup = () => {
         mt={"36"}
       >
         <form onSubmit={handleSubmit}>
+          <div
+            className={`flex h-6 mb-10   ${
+              socialLoginSDK?.provider ? "bg-green-400" : "bg-red-400"
+            } w-24 text-center pl-2 rounded`}
+          >
+            {" "}
+            {socialLoginSDK?.provider ? "Connected" : "Not connected"}
+          </div>
+          <div
+            onClick={() => navigate("/")}
+            className="text-md mb-10 bg-gray-500 rounded-full flex items-center cursor-pointer  justify-center font-bold text-center uppercase"
+          >
+            <h1>
+              Web3 <span className="block text-2xl">Notes</span>
+            </h1>
+            <Tag
+              size={"sm"}
+              className="ml-1 mb-6"
+              variant="solid"
+              colorScheme="teal"
+            >
+              beta
+            </Tag>
+          </div>
+
           <Text
             textAlign={"center"}
             color="white"
@@ -74,47 +196,14 @@ const Signup = () => {
             Create your account
           </Text>
 
-          <FormControl mb={"4"} isInvalid={validName}>
-            <Input
-              type={"name"}
-              h="10"
-              color={"whiteAlpha.900"}
-              autoComplete="true"
-              onChange={(e) => setName(e.target.value)}
-              placeholder="name"
-            />
-          </FormControl>
-          <FormControl mb={"4"} isInvalid={false}>
-            <Input
-              type={"email"}
-              h="10"
-              color={"whiteAlpha.900"}
-              autoComplete="true"
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="email"
-            />
-          </FormControl>
-          <FormControl isInvalid={false}>
-            <Input
-              type={"password"}
-              h={"10"}
-              autoComplete="true"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              color={"whiteAlpha.900"}
-              placeholder="password"
-            />
-          </FormControl>
-          <p
-            style={{
-              height: "5px",
-              marginBottom: "12px",
-              marginTop: "6px",
-              color: "red",
-            }}
-          >
-            {isError ? `${error?.data?.message}` : ""}
-          </p>
+          <Input
+            type={"name"}
+            h="10"
+            color={"whiteAlpha.900"}
+            autoComplete="true"
+            onChange={(e) => setName(e.target.value)}
+            placeholder="name"
+          />
 
           <Button
             isLoading={isLoading}

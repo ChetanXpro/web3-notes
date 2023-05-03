@@ -8,29 +8,27 @@ import fs from "fs";
 
 // @ Create new user
 const createNewUser = asyncHandler(async (req, res) => {
-  const { role, name, email, password } = req.body;
+  const { name, address } = req.body;
 
-  if (!name || !password || !email) {
-    return res.status(400).json({ message: "Al fields are require" });
+  if (!name || !address) {
+    return res.status(400).json({ message: "All fields are require" });
   }
 
-  const duplicates = await User.find({ email }).lean().exec();
+  const duplicates = await User.find({ address }).lean().exec();
 
   if (duplicates.length) {
     return res.status(409).json({
-      message: "Email already exist",
+      message: "Account already exist",
     });
   }
-  console.log(process.env.SALT);
-  const hashedPwd = await bcrypt.hash(password, 10);
 
-  const userObject = { email, password: hashedPwd, role, name };
+  const userObject = { address, name };
 
   const user = await User.create(userObject);
 
   if (!user) res.status(400).json({ messssage: `Invalid user data recevied` });
 
-  res.status(201).json({ message: `New user ${email} created` });
+  res.status(201).json({ message: `New user ${name} created` });
 });
 
 const getUserById = asyncHandler(async (req, res) => {
@@ -42,8 +40,6 @@ const getUserById = asyncHandler(async (req, res) => {
       .json({ success: false, message: "something went wrong" });
   }
 
-
-
   const foundUser = await User.findById(id);
 
   if (!foundUser)
@@ -52,12 +48,10 @@ const getUserById = asyncHandler(async (req, res) => {
       .json({ success: false, message: "No user found with this id" });
 
   const userInfo = {
-    email: foundUser.email,
     name: foundUser.name,
     role: foundUser.roles,
   };
- 
-  
+
   res.status(200).json(userInfo);
 });
 

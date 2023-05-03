@@ -26,7 +26,6 @@ const Header = () => {
   const showAvtarDrop = (e) => {
     setAvtarDrop(!avtarDrop);
   };
- 
 
   return (
     <div
@@ -39,7 +38,7 @@ const Header = () => {
         className="text-md flex items-center cursor-pointer  justify-center font-bold text-center uppercase"
       >
         <h1>
-          cloud <span className="block text-2xl">Notes</span>
+          Web3 <span className="block text-2xl">Notes</span>
         </h1>
         <Tag
           size={"sm"}
@@ -82,25 +81,6 @@ const Header = () => {
             <Text>Upload</Text>
           </Link>
           <div className="flex gap-1 items-center">
-            <div className="cursor-pointer md:ml-10 sm:ml-6 ml-4">
-              <a target={"_blank"} href="https://discord.gg/kDJQqxqv">
-                {colorMode === "light" ? (
-                  <img
-                    src={Discord}
-                    height="40rem"
-                    width={"40rem"}
-                    alt="discord"
-                  />
-                ) : (
-                  <img
-                    src={WhiteDiscord}
-                    height="40rem"
-                    width={"40rem"}
-                    alt="discord"
-                  />
-                )}
-              </a>
-            </div>
             <IconButton
               onClick={toggleColorMode}
               // colorScheme='blue'

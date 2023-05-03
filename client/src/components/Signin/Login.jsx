@@ -15,6 +15,7 @@ import SocialLogin from "@biconomy/web3-auth";
 import "@biconomy/web3-auth/dist/src/style.css";
 import { useToast } from "@chakra-ui/react";
 import { user } from "../../atoms/status";
+import { Tag } from "antd";
 const Login = () => {
   const [email, setEmail] = useState("");
   const from = location.state?.from?.pathname || "/";
@@ -31,30 +32,8 @@ const Login = () => {
   const [account, setAccount] = useState();
   const queryClient = useQueryClient();
   const loc = useLocation();
-  const { isLoading, isError, error, mutate } = useMutation(login, {
-    onSuccess: (data) => {
-      toast({
-        title: "Logined Successfuly",
 
-        status: "success",
-        duration: 2000,
-        isClosable: true,
-      });
-      const token = data?.accessToken;
-      localStorage.setItem("jwt", token);
-
-      setUserData({
-        email: data.email,
-        name: data.name,
-      });
-
-      setSuccess(true);
-
-      navigate(from, { replace: true });
-    },
-  });
-
-  const { isLoadings, mutate: walletMutate } = useMutation(walletLogin, {
+  const { isLoading, mutate: walletMutate } = useMutation(walletLogin, {
     onSuccess: (data) => {
       const token = data?.accessToken;
 
@@ -150,6 +129,12 @@ const Login = () => {
     };
   }, [account, connectWeb3, socialLoginSDK]);
 
+  useEffect(() => {
+    console.log(socialLoginSDK);
+    if (socialLoginSDK?.provider) return;
+    connectWeb3();
+  }, []);
+
   // desconnect web3
   const disconnectWeb3 = async () => {
     if (!socialLoginSDK || !socialLoginSDK.web3auth) {
@@ -191,6 +176,7 @@ const Login = () => {
   };
 
   const handleWallet = async () => {
+    console.log("Handle wallet");
     const provider = new ethers.providers.Web3Provider(socialLoginSDK.provider);
 
     const message = "Sign this message to log in to our app";
@@ -210,8 +196,9 @@ const Login = () => {
     };
     walletMutate(payload);
   };
+
   return (
-    <Flex h="100vh" bg={"#2b2b2b"} justifyContent="center">
+    <Flex h="100vh" w={"100vw"} bg={"#2b2b2b"} justifyContent="center">
       <Flex
         marginX="6"
         marginY={"6"}
@@ -219,9 +206,41 @@ const Login = () => {
         flexDirection={"column"}
         mt={"36"}
       >
-        <Button onClick={connectWeb3}>Connect</Button>
-
-        <Button onClick={handleWallet}>Login</Button>
+        <div
+          className={`flex h-6 mb-10   ${
+            socialLoginSDK?.provider ? "bg-green-400" : "bg-red-400"
+          } w-24 text-center pl-2 rounded`}
+        >
+          {" "}
+          {socialLoginSDK?.provider ? "Connected" : "Not connected"}
+        </div>
+        <div
+          onClick={() => navigate("/")}
+          className="text-md  bg-gray-500 rounded-full mb-10 flex items-center cursor-pointer  justify-center font-bold text-center uppercase"
+        >
+          <h1>
+            Web3 <span className="block text-2xl">Notes</span>
+          </h1>
+          <Tag
+            size={"sm"}
+            className="ml-1 mb-6"
+            variant="solid"
+            colorScheme="teal"
+          >
+            beta
+          </Tag>
+        </div>
+        <Button
+          isLoading={isLoading}
+          loadingText="Connecting"
+          width={"full"}
+          h="12"
+          colorScheme={"teal"}
+          mt={"4"}
+          onClick={handleWallet}
+        >
+          Sign in
+        </Button>
 
         <div></div>
         <Flex mt={"4"} justifyContent="center">
