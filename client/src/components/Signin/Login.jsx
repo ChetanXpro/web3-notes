@@ -3,19 +3,17 @@ import { useState, useEffect, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { FormControl, FormErrorMessage } from "@chakra-ui/react";
 import { login, walletLogin } from "../../Api/api";
-// import SocialLogin from "@biconomy/web3-auth";
-// import "@biconomy/web3-auth/dist/src/style.css";
+
 import { useAtom } from "jotai";
 import { ethers } from "ethers";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
-// import useAuth from "../hooks/useAuth";
-// import { Backdrop, Modal } from "@mui/material";
 import jwtDecode from "jwt-decode";
 import SocialLogin from "@biconomy/web3-auth";
 import "@biconomy/web3-auth/dist/src/style.css";
 import { useToast } from "@chakra-ui/react";
 import { user } from "../../atoms/status";
 import { Tag } from "antd";
+import useWalletAuth from "../../hooks/useWalletAuth";
 const Login = () => {
   const [email, setEmail] = useState("");
   const from = location.state?.from?.pathname || "/";
@@ -27,9 +25,15 @@ const Login = () => {
   const toast = useToast({ position: "top" });
   const [userData, setUserData] = useAtom(user);
 
-  const [socialLoginSDK, setSocialLoginSDK] = useState(null);
-  const [provider, setProvider] = useState();
-  const [account, setAccount] = useState();
+  const {
+    provider,
+    setProvider,
+    setAccount,
+    account,
+    socialLoginSDK,
+    setSocialLoginSDK,
+  } = useWalletAuth();
+
   const queryClient = useQueryClient();
   const loc = useLocation();
 
@@ -65,6 +69,16 @@ const Login = () => {
 
       navigate(from, { replace: true });
     },
+    onError: (e) => {
+      console.log("eeee", e);
+      toast({
+        title: e.statusText,
+
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+    },
   });
 
   const handleSubmit = (e) => {
@@ -99,9 +113,7 @@ const Login = () => {
       return socialLoginSDK;
     }
     const sdk = new SocialLogin();
-    await sdk.init({
-      chainId: ethers.utils.hexValue(80001),
-    });
+    await sdk.init();
     setSocialLoginSDK(sdk);
     sdk.showWallet();
     return socialLoginSDK;
@@ -168,13 +180,6 @@ const Login = () => {
     };
   }, [account, connectWeb3, socialLoginSDK]);
 
-  const getInfo = async () => {
-    if (socialLoginSDK) {
-      const info = await socialLoginSDK.getUserInfo();
-      console.log(info);
-    }
-  };
-
   const handleWallet = async () => {
     console.log("Handle wallet");
     const provider = new ethers.providers.Web3Provider(socialLoginSDK.provider);
@@ -209,9 +214,8 @@ const Login = () => {
         <div
           className={`flex h-6 mb-10   ${
             socialLoginSDK?.provider ? "bg-green-400" : "bg-red-400"
-          } w-24 text-center pl-2 rounded`}
+          } w-24 text-center text-yellow-50 pl-2 rounded`}
         >
-          {" "}
           {socialLoginSDK?.provider ? "Connected" : "Not connected"}
         </div>
         <div

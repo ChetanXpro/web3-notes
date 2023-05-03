@@ -65,7 +65,6 @@ const UploadPublicNotes = () => {
         fileSize: file.size,
       });
 
-      setIsUploading(true);
       setFiles([]);
       toast({
         title: `${file.name} Uploaded successfuly`,
@@ -78,6 +77,7 @@ const UploadPublicNotes = () => {
       setFileData([]);
       setUploadLoading(false);
     } catch (error) {
+      console.log(error);
       setUploadLoading(false);
       toast({
         title: "Files not uploaded !!",
@@ -137,19 +137,9 @@ const UploadPublicNotes = () => {
     isLoading: searchingNotes,
   } = useMutation(searchNotes);
 
-  const { mutate: add } = useMutation(addFav);
-
   const handleSelected = (value) => {
     setSelectedUniversity(value);
     mutate(value);
-  };
-  const handleSearch = () => {
-    const payload = {
-      selectedUniversity,
-
-      selectedSubject,
-    };
-    search(payload);
   };
 
   // const addtoFav = async (id) => {
@@ -162,7 +152,7 @@ const UploadPublicNotes = () => {
         <Heading mt={"2"}>Search Your Notes</Heading>
       </div>
       <div className=" flex flex-col md:flex-row lg:flex-row items-center mt-6 gap-6 justify-center">
-        <div>
+        <div className="flex flex-col gap-3">
           <Text>1. Search your University</Text>
           <Select
             showSearch
@@ -184,7 +174,7 @@ const UploadPublicNotes = () => {
           />
         </div>
 
-        <div>
+        <div className="flex flex-col gap-3">
           <Text>2. Search your Subject</Text>
           <Select
             showSearch

@@ -10,14 +10,37 @@ import WhiteDiscord from "../../assets/whitedis.png";
 import logo from "../../assets/nobg.png";
 import { Icon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { AntDesignOutlined, CloseOutlined } from "@ant-design/icons";
+import useWalletAuth from "../../hooks/useWalletAuth";
 
 const AvtarDrop = ({ setAvtarDrop }) => {
   const { colorMode, toggleColorMode } = useColorMode();
 
   const navigate = useNavigate();
 
+  const {
+    setProvider,
+    setAccount,
+
+    socialLoginSDK,
+  } = useWalletAuth();
+
+  const disconnectWeb3 = async () => {
+    if (!socialLoginSDK || !socialLoginSDK.web3auth) {
+      console.error("Web3Modal not initialized.");
+      return;
+    }
+    await socialLoginSDK.logout();
+    socialLoginSDK.hideWallet();
+    setProvider(undefined);
+    setAccount(undefined);
+  };
+
   const logout = () => {
     localStorage.removeItem("jwt");
+    localStorage.removeItem("openlogin_store");
+    localStorage.removeItem("Web3Auth-cachedAdapter");
+
+    disconnectWeb3();
     navigate("sign_in");
   };
 

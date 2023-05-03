@@ -11,11 +11,17 @@ import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useToast } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { Tag } from "antd";
+import useWalletAuth from "../../hooks/useWalletAuth";
 
 const Signup = () => {
-  const [socialLoginSDK, setSocialLoginSDK] = useState(null);
-  const [provider, setProvider] = useState();
-  const [account, setAccount] = useState();
+  const {
+    provider,
+    setProvider,
+    setAccount,
+    account,
+    socialLoginSDK,
+    setSocialLoginSDK,
+  } = useWalletAuth();
   const [name, setName] = useState("");
 
   const [success, setSuccess] = useState(false);
