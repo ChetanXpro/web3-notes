@@ -144,15 +144,19 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // address , signature , message, name
+    const message = "Sign this message to log in to our app";
     const provider = new ethers.providers.Web3Provider(socialLoginSDK.provider);
 
     const currentAccount = await provider.getSigner().getAddress();
 
-    console.log("Account: ", account);
+    const signature = await provider.getSigner().signMessage(message);
 
     const payload = {
       address: currentAccount.toLocaleLowerCase(),
       name: name,
+      message,
+      signature,
     };
 
     mutate(payload);

@@ -1,11 +1,10 @@
-import User from "../models/User.js";
-import Note from "../models/Note.js";
-import Collection from "../models/Collection.js";
 import asyncHandler from "express-async-handler";
 import formatBytes from "../config/formateByte.js";
 
 import { SpheronClient, ProtocolEnum } from "@spheron/storage";
-import PublicNotes from "../models/PublicNotes.js";
+
+import { Collection, Note } from "../config/dbConnecton.js";
+import { v4 as uuid } from "uuid";
 
 // Create collection
 const createCollection = asyncHandler(async (req, res) => {
@@ -13,24 +12,25 @@ const createCollection = asyncHandler(async (req, res) => {
     return res
       .status(400)
       .json({ success: false, message: "Something went wrong" });
+
   const { collectionName } = req.body;
   if (!collectionName)
     return res.status(400).json({ success: false, message: "Invalid input" });
-  const isCollectionAlreadyExist = await Collection.findOne({
-    title: collectionName,
-    user: req.id,
-  });
 
-  if (isCollectionAlreadyExist)
+  const isCollectionAlreadyExistt = await Collection.get();
+
+  const isCollectionAlreadyExist = isCollectionAlreadyExistt.data.filter(
+    (res) => res.data.user === req.id && res.data.title === collectionName
+  );
+
+  if (isCollectionAlreadyExist.length > 0)
     return res
       .status(400)
       .json({ success: false, message: "Collection already exist" });
 
-  await Collection.create({
-    user: req.id,
-    title: collectionName,
-    totalNotesInside: 0,
-  });
+  const id = uuid();
+
+  await Collection.create([id, collectionName, req.id, 0]);
 
   res
     .status(200)
@@ -45,13 +45,27 @@ const getCollectionList = asyncHandler(async (req, res) => {
       .status(400)
       .json({ success: false, message: "Something went wrong" });
 
-  const collectionFound = await Collection.find({
-    user: id,
-  }).lean();
+  const collectionFound = await Collection.where("user", "==", id).get();
 
-  const arr = collectionFound.map((i) => {
+  let data;
+  if (collectionFound.data.length === 0) {
+    data = [];
+  } else {
+    data = collectionFound.data.map((i) => {
+      if (i?.data) {
+        return {
+          id: i.data.id,
+          title: i.data.title,
+          totalNotesInside: i.data.totalNotesInside,
+          user: i.data.user,
+        };
+      }
+    });
+  }
+
+  const arr = data.map((i) => {
     const obj = {
-      id: i._id,
+      id: i.id,
       label: i.title,
       value: i.title,
       totalNotesInside: i.totalNotesInside,
@@ -94,24 +108,39 @@ const createNotes = asyncHandler(async (req, res) => {
 
   const size = formatBytes(fileSize);
 
-  const collectionFound = await Collection.findOne({ title: collectionName });
+  // const collectionFound = await Collection.findOne({ title: collectionName });
 
-  if (!collectionFound)
+  const isCollectionAlreadyExistt = await Collection.get();
+
+  const isCollectionAlreadyExist = isCollectionAlreadyExistt.data.filter(
+    (res) => res.data.user === req.id && res.data.title === collectionName
+  );
+
+  if (isCollectionAlreadyExist.length === 0)
     return res.status(400).json({
       success: false,
       message: `${collectionName} Collection does not exist`,
     });
 
-  await Note.create({
-    name: noteName,
-    userId: req.id,
+  const data = isCollectionAlreadyExist[0].data;
+  const id = uuid();
+
+  const note = await Note.create([
+    id,
+    data.id,
+    noteName,
+    req?.id,
     url,
     size,
     blobName,
-    collectionID: collectionFound._id,
-  });
+  ]);
+  // .catch((err) => console.log(err));
 
-  await collectionFound.updateOne({ $inc: { totalNotesInside: +1 } });
+  // console.log(note);
+
+  const dd = await Collection.record(data.id).call("updateTotalNotesInside", [
+    "+",
+  ]);
 
   res.status(200).json({ success: true, message: "Note Uploaded" });
 });
@@ -119,25 +148,29 @@ const createNotes = asyncHandler(async (req, res) => {
 const getNotes = asyncHandler(async (req, res) => {
   const { collectionID } = req.query;
 
-  if (!collectionID || collectionID.length !== 24)
+  if (!collectionID)
     return res.status(400).json({
       success: false,
       message: "Please provide a valid collection id",
     });
 
-  const foundNotes = await Note.find({
-    collectionID: collectionID,
-  });
+  const notes = await Note.where("collectionID", "==", collectionID).get();
 
-  const arr = foundNotes.map((i) => {
-    const obj = {
-      id: i._id,
-      name: i.name,
-      size: i.size,
-      url: i.url,
-    };
-    return obj;
-  });
+  let arr;
+  if (notes.data.length === 0) {
+    arr = [];
+  } else {
+    arr = notes.data.map((i) => {
+      if (i?.data) {
+        return {
+          id: i.data.id,
+          name: i.data.name,
+          size: i.data.size,
+          url: i.data.url,
+        };
+      }
+    });
+  }
 
   res.status(200).json({ arr });
 });
@@ -145,22 +178,22 @@ const getNotes = asyncHandler(async (req, res) => {
 const deleteNote = asyncHandler(async (req, res) => {
   const { noteID } = req.query;
 
-  if (!noteID || noteID.length !== 24)
+  if (!noteID)
     return res.status(400).json({
       success: false,
-      message: "Please provide a valid collection id",
+      message: "Please provide a valid note id",
     });
 
-  const foundNote = await Note.findOne({ _id: noteID, userId: req.id });
+  const isUsersNote = await Note.where("id", "==", noteID)
+    .where("userId", "==", req.id)
+    .get();
 
-  if (!foundNote)
-    return res.status(400).json({ success: false, message: "No note found" });
+  const { data } = await Note.record(isUsersNote.data[0].data.id).call("del");
 
-  const collectionFound = await Collection.findById(foundNote.collectionID);
-
-  await collectionFound.updateOne({ $inc: { totalNotesInside: -1 } });
-
-  const cc = await foundNote.deleteOne();
+  await Collection.record(isUsersNote.data[0].data.collectionID).call(
+    "updateTotalNotesInside",
+    ["-"]
+  );
 
   res.status(200).json({ success: true, message: "note deleted" });
 });
@@ -168,25 +201,19 @@ const deleteNote = asyncHandler(async (req, res) => {
 const deleteCollection = asyncHandler(async (req, res) => {
   const { collectionID } = req.query;
 
-  if (!collectionID || collectionID.length !== 24)
+  if (!collectionID)
     return res.status(400).json({
       success: false,
       message: "Please provide a valid collection id",
     });
 
-  const { acknowledged, deletedCount } = await Collection.deleteOne({
-    _id: collectionID,
-    user: req.id,
-  });
-
-  if (!deletedCount)
-    return res.status(400).json({ success: false, message: "No folder found" });
-
-  const notes = await Note.find({ collectionID, userId: req.id });
-
-  const resol = await Promise.allSettled(promise);
-
-  await deleteMany({ collectionID, userId: req.id });
+  const isUsersCollection = await Collection.where("id", "==", collectionID)
+    .where("user", "==", req.id)
+    .get();
+  console.log(isUsersCollection.data[0].data.id);
+  const { data } = await Collection.record(
+    isUsersCollection.data[0].data.id
+  ).call("del");
 
   res.status(200).json({ success: true, message: "Folder deleted" });
 });

@@ -1,32 +1,39 @@
-import User from "../models/User.js";
-import Note from "../models/Note.js";
-
 import asyncHandler from "express-async-handler";
-import bcrypt from "bcrypt";
 
-import fs from "fs";
+import { db } from "../config/dbConnecton.js";
+import { ethPersonalSignRecoverPublicKey } from "@polybase/eth";
+
+import { v4 as uuid } from "uuid";
 
 // @ Create new user
 const createNewUser = asyncHandler(async (req, res) => {
-  const { name, address } = req.body;
+  const { address, signature, message, name } = req.body;
 
-  if (!name || !address) {
+  if (!signature || !address || !message || !name) {
     return res.status(400).json({ message: "All fields are require" });
   }
 
-  const duplicates = await User.find({ address }).lean().exec();
+  const pkWithPrefix = await ethPersonalSignRecoverPublicKey(
+    signature,
+    message
+  );
+  const publicKey = "0x" + pkWithPrefix.slice(4);
 
-  if (duplicates.length) {
+  // console.log(publicKey);
+  const id = uuid();
+
+  const duplicate = await db
+    .collection("User")
+    .where("publicKey", "==", publicKey)
+    .get();
+
+  if (duplicate.data.length > 0) {
     return res.status(409).json({
       message: "Account already exist",
     });
   }
 
-  const userObject = { address, name };
-
-  const user = await User.create(userObject);
-
-  if (!user) res.status(400).json({ messssage: `Invalid user data recevied` });
+  const user = await db.collection("User").create([id, publicKey, name, true]);
 
   res.status(201).json({ message: `New user ${name} created` });
 });
@@ -40,72 +47,26 @@ const getUserById = asyncHandler(async (req, res) => {
       .json({ success: false, message: "something went wrong" });
   }
 
-  const foundUser = await User.findById(id);
+  // const foundUser = await User.findById(id);
 
-  if (!foundUser)
+  const foundUser = await db.collection("User").where("id", "==", id).get();
+
+  if (foundUser.data.length < 0)
     return res
       .status(400)
       .json({ success: false, message: "No user found with this id" });
 
+  const data = foundUser.data[0].data;
+
   const userInfo = {
-    name: foundUser.name,
-    role: foundUser.roles,
+    name: data.name,
+    role: data.roles,
   };
 
   res.status(200).json(userInfo);
 });
 
-// @ Update user
-const updateUser = asyncHandler(async (req, res) => {
-  const { id, username, cid } = req.body;
-
-  if (!id || !username || !id) {
-    return res
-      .status(400)
-      .json({ message: "All fields except password are required" });
-  }
-  // Does the user exist to update?
-  const user = await User.findById(id).exec();
-
-  if (!user) {
-    return res.status(400).json({ message: "User not found" });
-  }
-  // Check for duplicate
-  const foundUser = await User.findOne({ username }).lean().exec();
-
-  foundUser.cid = cid;
-
-  const updatedUser = await foundUser.save();
-
-  res.json({ message: `${updatedUser.username} updated` });
-});
-
-// @ Deete user
-const deleteUser = asyncHandler(async (req, res) => {
-  const { id } = req.body;
-
-  // Confirm data
-  if (!id) {
-    return res.status(400).json({ message: "User ID Required" });
-  }
-
-  // Does the user exist to delete?
-  const user = await User.findById(id).exec();
-
-  if (!user) {
-    return res.status(400).json({ message: "User not found" });
-  }
-
-  const result = await user.deleteOne();
-
-  const reply = `User${result.username} with ID ${result._id} deleted`;
-
-  res.json(reply);
-});
-
 export default {
   createNewUser,
-  updateUser,
-  deleteUser,
   getUserById,
 };
