@@ -99,7 +99,7 @@ const Upload = () => {
       const token = await apiPrivateInstance.get("/note/initiate-upload");
 
       // Rename file
-      console.log(token.data.uploadToken);
+
       const nameChanged = new File([file], `${file.name}--${uniqueId}${ext}`);
 
       const res = await upload([nameChanged], {

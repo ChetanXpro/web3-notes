@@ -1,19 +1,26 @@
-import { set, connect } from "mongoose";
-import logger from "./logger.js";
-// import { info, error as _error } from "./logger";
+import { Polybase } from "@polybase/client";
 
-// const logger = require("./logger");
+import { ethPersonalSign } from "@polybase/eth";
+import { decodeFromString } from "@polybase/util";
 
+const PRIVATE_KEY = process.env.PRIVATE_KEY ?? "";
 
-const connectDB = async () => {
-  try {
-    set('strictQuery', false)
-    await connect(process.env.DATABASE_URI, () => {
-      logger.info("Database connected");
-    });
-  } catch (error) {
-    logger.error(error);
-  }
-};
+const db = new Polybase({
+  baseURL: `https://testnet.polybase.xyz/v0`,
+  defaultNamespace: process.env.NAMESPACE,
 
-export default connectDB;
+  signer: async (data) => {
+    const privateKey = Buffer.from(
+      decodeFromString(process.env.PRIVATE_KEY, "hex")
+    );
+    return { h: "eth-personal-sign", sig: ethPersonalSign(privateKey, data) };
+  },
+});
+
+const User = db.collection("User");
+const Collection = db.collection("Collection");
+const Note = db.collection("Note");
+const PublicNotes = db.collection("PublicNotes");
+const Favourite = db.collection("Favourite");
+
+export { db, User, Collection, Note, PublicNotes, Favourite };

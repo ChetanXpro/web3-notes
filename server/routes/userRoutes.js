@@ -9,7 +9,4 @@ import verifyJWT from "../middleware/verifyJWT.js";
 router.post("/", userController.createNewUser);
 router.get("/getUser", verifyJWT, userController.getUserById);
 
-router.patch("/", verifyJWT, userController.updateUser);
-router.delete("/", verifyJWT, userController.deleteUser);
-
 export default router;

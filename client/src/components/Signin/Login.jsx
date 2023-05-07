@@ -70,7 +70,6 @@ const Login = () => {
       navigate(from, { replace: true });
     },
     onError: (e) => {
-      console.log("eeee", e);
       toast({
         title: e.statusText,
 
@@ -92,8 +91,7 @@ const Login = () => {
 
   const connectWeb3 = useCallback(async () => {
     if (typeof window === "undefined") return;
-    console.log("socialLoginSDK: ", socialLoginSDK);
-    console.log("socialLoginSDK Provider: ", socialLoginSDK?.provider);
+
     if (socialLoginSDK?.provider) {
       const web3Provider = new ethers.providers.Web3Provider(
         socialLoginSDK.provider
@@ -113,7 +111,9 @@ const Login = () => {
       return socialLoginSDK;
     }
     const sdk = new SocialLogin();
-    await sdk.init();
+    await sdk.init({
+      chainId: ethers.utils.hexValue(80001),
+    });
     setSocialLoginSDK(sdk);
     sdk.showWallet();
     return socialLoginSDK;
@@ -142,7 +142,6 @@ const Login = () => {
   }, [account, connectWeb3, socialLoginSDK]);
 
   useEffect(() => {
-    console.log(socialLoginSDK);
     if (socialLoginSDK?.provider) return;
     connectWeb3();
   }, []);
@@ -181,7 +180,6 @@ const Login = () => {
   }, [account, connectWeb3, socialLoginSDK]);
 
   const handleWallet = async () => {
-    console.log("Handle wallet");
     const provider = new ethers.providers.Web3Provider(socialLoginSDK.provider);
 
     const message = "Sign this message to log in to our app";
@@ -189,10 +187,6 @@ const Login = () => {
     const currentAccount = await provider.getSigner().getAddress();
 
     const signature = await provider.getSigner().signMessage(message);
-
-    console.log("signature: ", signature);
-
-    console.log("Account: ", account);
 
     const payload = {
       address: currentAccount.toLocaleLowerCase(),

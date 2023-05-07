@@ -1,9 +1,6 @@
 import axios from "axios";
 
-// const API_BASE_URL = "http://provider.d3akash.cloud:31682";
-//
-
-const API_BASE_URL = "http://localhost:5000";
+const API_BASE_URL = "http://provider.palmito.duckdns.org:31378";
 
 export const apiInstance = axios.create({
   baseURL: API_BASE_URL,
@@ -32,10 +29,9 @@ export const login = async (payload) => {
 export const walletLogin = async (payload) => {
   try {
     const request = await apiInstance.post("/auth/wallet", payload);
-    console.log(request.data);
+
     return request?.data;
   } catch (err) {
-    console.log(err);
     const error = err;
     return Promise.reject(error.response);
   }

@@ -1,5 +1,4 @@
 import "dotenv/config";
-import path from "path";
 
 import express, { json } from "express";
 const app = express();
@@ -9,7 +8,6 @@ import cookieParser from "cookie-parser";
 
 import cors from "cors";
 
-import connectDB from "./config/dbConnecton.js";
 import logger from "./config/logger.js";
 import corsOption from "./config/corsOptons.js";
 
@@ -39,7 +37,6 @@ app.use("/admin", adminRoutes);
 app.use(errorHandler);
 app.use(cookieParser());
 
-connectDB();
 app.listen(port, () => {
   logger.info(`Server running on ${port}`);
 });

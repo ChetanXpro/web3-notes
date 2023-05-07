@@ -4,24 +4,22 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 // import { getUser } from "../Api/api";
 import img from "../../assets/boon.png";
+import MainPageHeader from "./MainPageHeader";
 
 const Home = () => {
-  const [data, setData] = useState();
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   return (
     <div className=" flex flex-col  justify-center    h-screen w-full items-center gap-3 ">
+      <MainPageHeader />
       <div className=" flex flex-col sm:flex-row md:flex-row lg:flex-row xl:flex-row  h-full w-full items-center gap-3">
         <div className=" flex flex-col items-center justify-center  flex-1">
           <Text className="text-4xl md:text-4xl lg:text-6xl mb-8   font-sans text-center flex-1">
             Store Your Notes
           </Text>
-          <Text className="font-sans text-center mb-12">
-            Soon more features will be available
-          </Text>
+
           {/* <Button onClick={() => navigate("/upload")}>Get Started</Button> */}
           <button
-            onClick={() => navigate("/upload")}
+            onClick={() => navigate("/sign_in")}
             className="cssbuttons-io-button"
           >
             Get started
