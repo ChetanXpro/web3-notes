@@ -9,12 +9,13 @@
 - user can upload there notes in form of Pdf, txt , img files <br/>
 
 - User control all their notes and store them securely on a decentralized network that's always online.<br/>
+  <br/>
 
-# Features
+# 🔥 Features
 
 - User can easily login with metamask
 
-  <img src='./images/login.png' /> <br/>
+  <img   src='./images/login.png' /> <br/>
 
 - Users can create folders just like google drive , and then upload notes in different folders.
   it help them to keep notes according to their need.
@@ -29,8 +30,59 @@
 
   <img src='./images/public.png' /> <br/>
 
-# 🔨 Get Started
+# ⚙️ Technology
+
+- React.js , which is hosted Spheron Decentralized Hosting.
+- Decentralized Nodejs and Express.js
+- Polybase web3 database
+- Spheron Storage SDK to Upload notes on Decentralized storage.
 
 <hr/>
 
-### This Dapp build with
+# 🔨 Get Started
+
+<hr/>
+<br/>
+
+### This product contain client and server
+
+<br/>
+
+## - Client
+
+<br/>
+
+1. &nbsp; Clone this repository
+
+&nbsp; `git clone https://github.com/ChetanXpro/web3-notes.git`
+
+&nbsp; ` cd client`
+
+&nbsp; `npm install`
+
+2. Run React.js app
+
+&nbsp; `npm run dev`
+
+## - Server
+
+1. &nbsp; Clone this repository
+
+&nbsp; `git clone https://github.com/ChetanXpro/web3-notes.git`
+
+&nbsp; ` cd server`
+
+&nbsp; `npm install`
+
+2. &nbsp; Add .env file
+
+```
+ACCESS_TOKEN_SECRET=<A random string>
+SPHERON_TOKEN=<YOUR SPHERON TOKEN>
+POLYBASE_NAMESPACE=<YOUR polybase-namespace >
+PRIVATE_KEY=<your private key to intereact with polybase>
+```
+
+3. Run Server app
+
+&nbsp; `npm run dev`
