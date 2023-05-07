@@ -113,7 +113,9 @@ const Login = () => {
       return socialLoginSDK;
     }
     const sdk = new SocialLogin();
-    await sdk.init();
+    await sdk.init({
+      chainId: ethers.utils.hexValue(80001),
+    });
     setSocialLoginSDK(sdk);
     sdk.showWallet();
     return socialLoginSDK;

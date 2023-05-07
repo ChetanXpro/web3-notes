@@ -15,7 +15,7 @@ const useAuthentication = () => {
 
   const isLogin = !!localStorage.getItem("jwt");
   const token = localStorage.getItem("jwt");
-  const isAdmin = token ? jwtDecode(token)?.role === "admin" : null;
+  const isAdmin = token ? jwtDecode(token)?.role === "Admin" : null;
 
   useEffect(() => {
     const fetchuser = async () => {

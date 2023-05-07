@@ -1,20 +1,3 @@
-import { set, connect } from "mongoose";
-import logger from "./logger.js";
-// import { info, error as _error } from "./logger";
-
-// const logger = require("./logger");
-
-const connectDB = async () => {
-  try {
-    set("strictQuery", false);
-    await connect(process.env.DATABASE_URI, () => {
-      logger.info("Database connected");
-    });
-  } catch (error) {
-    logger.error(error);
-  }
-};
-
 import { Polybase } from "@polybase/client";
 
 import { ethPersonalSign } from "@polybase/eth";
@@ -41,4 +24,3 @@ const PublicNotes = db.collection("PublicNotes");
 const Favourite = db.collection("Favourite");
 
 export { db, User, Collection, Note, PublicNotes, Favourite };
-export default connectDB;

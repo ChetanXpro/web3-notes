@@ -69,7 +69,7 @@ const Header = () => {
           <Link to={"/profile"} className=" ml-4">
             <Text>Profile</Text>
           </Link>
-          {userData.role === "admin" ? (
+          {userData.role === "Admin" ? (
             <Link to={"/uploadfiles"} className=" ml-4">
               <Text>Admin</Text>
             </Link>

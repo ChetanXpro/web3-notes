@@ -26,14 +26,14 @@ const Favourite = () => {
   };
 
   if (isLoading) return <Loader />;
- 
+
   return (
     <div className="flex items-center   w-full justify-center mt-8 lg:ml-6 md:ml-14 xl:ml-6 lg:p-4 lg:justify-start md:justify-start xl:justify-start flex-wrap md:mt-14 lg:mt-14 xl:mt-12 ">
       {data.favlist && data.favlist.length > 0 ? (
         data.favlist.map((i) => (
           <NotesCard
-            key={i._id}
-            id={i._id}
+            key={i.id}
+            id={i.id}
             name={i.name}
             url={i.url}
             size={i.size}

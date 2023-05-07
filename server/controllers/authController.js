@@ -1,11 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
-import {
-  requestAccounts,
-  sign,
-  ethPersonalSignRecoverPublicKey,
-} from "@polybase/eth";
+import { ethPersonalSignRecoverPublicKey } from "@polybase/eth";
 
 import { User } from "../config/dbConnecton.js";
 

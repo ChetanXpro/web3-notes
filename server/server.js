@@ -39,7 +39,6 @@ app.use("/admin", adminRoutes);
 app.use(errorHandler);
 app.use(cookieParser());
 
-connectDB();
 app.listen(port, () => {
   logger.info(`Server running on ${port}`);
 });

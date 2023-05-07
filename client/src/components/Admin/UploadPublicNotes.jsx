@@ -24,6 +24,7 @@ import {
 import { CloudUploadOutlined, SearchOutlined } from "@ant-design/icons";
 
 import UploadedFiles from "../Upload/UploadedFiles";
+import formatBytes from "../../../../server/config/formateByte";
 
 const UploadPublicNotes = () => {
   const [files, setFiles] = useState(null);
@@ -50,6 +51,8 @@ const UploadPublicNotes = () => {
 
       // Rename file
       console.log(token.data.uploadToken);
+
+      const fileSize = formatBytes(file.size);
       const nameChanged = new File([file], `${file.name}--${uniqueId}${ext}`);
 
       const res = await upload([nameChanged], {
@@ -62,7 +65,7 @@ const UploadPublicNotes = () => {
         name: file.name,
         url: `${res.protocolLink}/${nameChanged.name}`,
 
-        fileSize: file.size,
+        fileSize,
       });
 
       setFiles([]);
