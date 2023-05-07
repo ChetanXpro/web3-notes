@@ -81,6 +81,8 @@ const Login = () => {
   };
 
   const handleWallet = async () => {
+        if (typeof window.ethereum !== "undefined") {
+    
     const provider = new ethers.providers.Web3Provider(window.ethereum);
 
     const message = "Sign this message to log in to our app";
@@ -95,6 +97,11 @@ const Login = () => {
       message,
     };
     walletMutate(payload);
+          
+        }else{
+        
+        alert("MetaMask not installed");
+        }
   };
 
   return (
