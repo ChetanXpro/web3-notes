@@ -44,22 +44,34 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // address , signature , message, name
-    const message = "Sign this message to log in to our app";
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    if (!name)
+      return toast({
+        title: "Enter Your Name",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
 
-    const currentAccount = await provider.getSigner().getAddress();
+    if (typeof window.ethereum !== "undefined") {
+      // address , signature , message, name
+      const message = "Sign this message to log in to our app";
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-    const signature = await provider.getSigner().signMessage(message);
+      const currentAccount = await provider.getSigner().getAddress();
 
-    const payload = {
-      address: currentAccount.toLocaleLowerCase(),
-      name: name,
-      message,
-      signature,
-    };
+      const signature = await provider.getSigner().signMessage(message);
 
-    mutate(payload);
+      const payload = {
+        address: currentAccount.toLocaleLowerCase(),
+        name: name,
+        message,
+        signature,
+      };
+
+      mutate(payload);
+    } else {
+      alert("MetaMask not installed");
+    }
   };
   return (
     <Flex h="100vh" bg={"#2b2b2b"} justifyContent="center">

@@ -25,15 +25,6 @@ const Login = () => {
   const toast = useToast({ position: "top" });
   const [userData, setUserData] = useAtom(user);
 
-  const {
-    provider,
-    setProvider,
-    setAccount,
-    account,
-    socialLoginSDK,
-    setSocialLoginSDK,
-  } = useWalletAuth();
-
   const queryClient = useQueryClient();
   const loc = useLocation();
 
@@ -115,13 +106,6 @@ const Login = () => {
         flexDirection={"column"}
         mt={"36"}
       >
-        <div
-          className={`flex h-6 mb-10   ${
-            socialLoginSDK?.provider ? "bg-green-400" : "bg-red-400"
-          } w-24 text-center text-yellow-50 pl-2 rounded`}
-        >
-          {socialLoginSDK?.provider ? "Connected" : "Not connected"}
-        </div>
         <div
           onClick={() => navigate("/")}
           className="text-md  bg-gray-500 rounded-full mb-10 flex items-center cursor-pointer  justify-center font-bold text-center uppercase"
