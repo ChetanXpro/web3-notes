@@ -1,5 +1,4 @@
 import "dotenv/config";
-import path from "path";
 
 import express, { json } from "express";
 const app = express();
@@ -9,11 +8,10 @@ import cookieParser from "cookie-parser";
 
 import cors from "cors";
 
-import connectDB from "./config/dbConnecton.js";
 import logger from "./config/logger.js";
 import corsOption from "./config/corsOptons.js";
 
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 app.use("*", cors(corsOption));
 

@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
- const verifyJWT = (req, res, next) => {
+const verifyJWT = (req, res, next) => {
   const authHeader =
     req.headers.authorization || req.headers.Authorization || "";
 
@@ -10,14 +10,18 @@ import jwt from "jsonwebtoken";
 
   const token = authHeader.split(" ")[1];
 
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-    if (err) return res.status(403).json({ message: "Forbidden" });
+  jwt.verify(
+    token,
+    process.env.ACCESS_TOKEN_SECRET || "dfdfdfdfd",
+    (err, decoded) => {
+      if (err) return res.status(403).json({ message: "Forbidden" });
 
-    req.id = decoded.id;
+      req.id = decoded.id;
 
-    // req.roles = decoded.UserInfo.roles;
-    next();
-  });
+      // req.roles = decoded.UserInfo.roles;
+      next();
+    }
+  );
 };
 
-export default verifyJWT
+export default verifyJWT;
