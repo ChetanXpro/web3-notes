@@ -22,7 +22,6 @@ import ErrorPage from "./components/404/ErrorPage";
 function App() {
   return (
     <Routes>
-      //{" "}
       <Route path="/" element={<Layout />}>
         <Route path="/sign_in" element={<Login />} />
         <Route path="/sign_up" element={<Signup />} />
