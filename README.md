@@ -46,8 +46,8 @@
 
 ## NOTE-> Install metamask in browser to avoid errors
 
-- Live demo not working properly because of cors error, i purchaseda custom domain but error was not solved
-- Due to final year exams i was not able to debug this cors error.
+- Live demo not working properly because of cors error, i purchased custom domain and linked it with spheron deployed api , but error was not solved
+- Due to  college final year exams i am not able to debug this cors error properly.
 
 ## Links
 
