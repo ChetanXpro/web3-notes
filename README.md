@@ -34,7 +34,7 @@
 
 - React.js , which is hosted Spheron Decentralized Hosting.
 - Decentralized Nodejs and Express.js
-- Polybase web3 database
+- Polybase web3 database (schema created with polybase explorer)
 - Spheron Storage SDK to Upload notes on Decentralized storage.
 
 <hr/>
