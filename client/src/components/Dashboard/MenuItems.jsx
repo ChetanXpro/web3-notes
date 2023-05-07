@@ -29,9 +29,6 @@ const MenuItems = ({ showMenu, active }) => {
       }
     >
       <CloseOutlined onClick={showMenu} />
-      <Link className="hover:underline" onClick={showMenu} to={"/"}>
-        <Text>Home</Text>
-      </Link>
 
       <Link className="hover:underline" onClick={showMenu} to={"/profile"}>
         <Text>Profile</Text>

@@ -16,7 +16,7 @@ import { Tag } from "antd";
 import useWalletAuth from "../../hooks/useWalletAuth";
 const Login = () => {
   const [email, setEmail] = useState("");
-  const from = location.state?.from?.pathname || "/";
+  const from = location.state?.from?.pathname || "/profile";
 
   const navigate = useNavigate();
   // const { setAuth, setUser } = useAuth();

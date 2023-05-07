@@ -50,10 +50,6 @@ const AvtarDrop = ({ setAvtarDrop }) => {
         "flex-col flex absolute rounded-xl  z-50 items-center top-12 right-1 bottom-0 h-[6rem]   uppercase bg-black/40 backdrop-blur-lg gap-8 justify-center p-8 "
       }
     >
-      <Link className="hover:underline w-full h-full" to={"/"}>
-        <Text>Settings</Text>
-      </Link>
-
       <Text className="hover:underline cursor-pointer" onClick={logout}>
         Logout
       </Text>

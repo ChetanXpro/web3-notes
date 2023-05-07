@@ -5,16 +5,46 @@ import { useNavigate } from "react-router-dom";
 // import { getUser } from "../Api/api";
 import img from "../../assets/boon.png";
 import MainPageHeader from "./MainPageHeader";
+import { Tag } from "antd";
 
 const Home = () => {
   const navigate = useNavigate();
   return (
-    <div className=" flex flex-col  justify-center    h-screen w-full items-center gap-3 ">
+    <div className=" flex flex-col bg-[#2b2b2b] text-white  justify-center    h-screen w-full items-center gap-3 ">
       <MainPageHeader />
+      <div className="flex justify-between pr-24 pl-24 items-center w-full fixed top-10  h-20">
+        <div
+          onClick={() => navigate("/")}
+          className="text-md text-black  bg-gray-100 rounded-full  w-48 flex items-center cursor-pointer  justify-center font-bold text-center uppercase"
+        >
+          <h1>
+            Web3 <span className="block text-2xl">Notes</span>
+          </h1>
+          <Tag
+            size={"sm"}
+            className="ml-1 mb-6"
+            variant="solid"
+            colorScheme="teal"
+          >
+            beta
+          </Tag>
+        </div>
+        <div>
+          <a href="https://github.com/ChetanXpro/web3-notes-app">
+            <button className="font-bold text-lg underline">Github</button>
+          </a>
+        </div>
+      </div>
       <div className=" flex flex-col sm:flex-row md:flex-row lg:flex-row xl:flex-row  h-full w-full items-center gap-3">
         <div className=" flex flex-col items-center justify-center  flex-1">
           <Text className="text-4xl md:text-4xl lg:text-6xl mb-8   font-sans text-center flex-1">
             Store Your Notes
+          </Text>
+          <Text className="font-sans text-lg text-center ">
+            Take control of your notes and store them securely
+          </Text>
+          <Text className="mb-5 font-sans  text-lg ">
+            on a decentralized network that's always online.
           </Text>
 
           {/* <Button onClick={() => navigate("/upload")}>Get Started</Button> */}

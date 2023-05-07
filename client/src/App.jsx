@@ -31,7 +31,7 @@ function App() {
           <Route path="/" element={<Dashboard />}>
             {/* <Route index element={<Home />} /> */}
             <Route path="setting" element={<Setting />} />
-            <Route path="profile" element={<Profile />} />
+            <Route index path="profile" element={<Profile />} />
             <Route path="profile/:id" element={<NotesPage />} />
             <Route path="upload" element={<UploadFile />} />
             <Route path="public" element={<PublicNotes />} />

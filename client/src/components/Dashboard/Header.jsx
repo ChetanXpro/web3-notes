@@ -34,7 +34,7 @@ const Header = () => {
       }   font-mono    h-16  flex justify-between p-4 items-center`}
     >
       <div
-        onClick={() => navigate("/")}
+        onClick={() => navigate("/profile")}
         className="text-md flex items-center cursor-pointer  justify-center font-bold text-center uppercase"
       >
         <h1>
@@ -59,10 +59,6 @@ const Header = () => {
         </div>
 
         <ul className="hidden md:flex gap-8 items-center p-6 uppercase ">
-          <Link to={"/"} className="">
-            <Text>Home</Text>
-          </Link>
-
           <Link to={"/public"} className=" ml-4">
             <Text>Public</Text>
           </Link>
