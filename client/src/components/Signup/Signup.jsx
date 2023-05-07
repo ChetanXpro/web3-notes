@@ -51,8 +51,7 @@ const Signup = () => {
 
   const connectWeb3 = useCallback(async () => {
     if (typeof window === "undefined") return;
-    console.log("socialLoginSDK: ", socialLoginSDK);
-    console.log("socialLoginSDK Provider: ", socialLoginSDK?.provider);
+  
     if (socialLoginSDK?.provider) {
       const web3Provider = new ethers.providers.Web3Provider(
         socialLoginSDK.provider

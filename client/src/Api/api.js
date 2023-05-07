@@ -29,10 +29,9 @@ export const login = async (payload) => {
 export const walletLogin = async (payload) => {
   try {
     const request = await apiInstance.post("/auth/wallet", payload);
-    console.log(request.data);
+
     return request?.data;
   } catch (err) {
-    console.log(err);
     const error = err;
     return Promise.reject(error.response);
   }

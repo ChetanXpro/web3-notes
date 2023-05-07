@@ -50,7 +50,6 @@ const UploadPublicNotes = () => {
       const token = await apiPrivateInstance.get("/note/initiate-upload");
 
       // Rename file
-      console.log(token.data.uploadToken);
 
       const fileSize = formatBytes(file.size);
       const nameChanged = new File([file], `${file.name}--${uniqueId}${ext}`);
