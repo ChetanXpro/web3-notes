@@ -13,7 +13,18 @@ import corsOption from "./config/corsOptons.js";
 
 const port = process.env.PORT || 5000;
 
-app.use("*", cors(corsOption));
+app.use(function (req, res, next) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Methods",
+    " GET, POST, PATCH, PUT, DELETE, OPTIONS"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  next();
+});
 
 app.use(json());
 app.use(cookieParser());

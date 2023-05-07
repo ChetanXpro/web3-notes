@@ -44,7 +44,24 @@
 <hr/>
 <br/>
 
-### This product contain client and server
+## NOTE-> Install metamask in browser to avoid errors
+
+- Live demo not working properly because of cors error, i purchaseda custom domain but error was not solved
+- Due to final year exams i was not able to debug this cors error.
+
+## Links
+
+### Youtube demo video -> [Click here](https://www.youtube.com/watch?v=nL_3tIjX9-k)
+
+### [Live Demo](https://web3-frontend-fd09a5.spheron.app/)
+
+### [Api Demo](http://provider.palmito.duckdns.org:32748/)
+
+### Custom domain for api : https://web3-notes.live/
+
+<br/>
+
+## This product contain client and server
 
 <br/>
 
