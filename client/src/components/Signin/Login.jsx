@@ -81,27 +81,32 @@ const Login = () => {
   };
 
   const handleWallet = async () => {
-        if (typeof window.ethereum !== "undefined") {
-    
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    if (typeof window.ethereum !== "undefined") {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-    const message = "Sign this message to log in to our app";
+      const message = "Sign this message to log in to our app";
 
-    const currentAccount = await provider.getSigner().getAddress();
+      const accounts = await ethereum.request({
+        method: "eth_requestAccounts",
+      });
 
-    const signature = await provider.getSigner().signMessage(message);
+      console.log(accounts);
 
-    const payload = {
-      address: currentAccount.toLocaleLowerCase(),
-      signature: signature,
-      message,
-    };
-    walletMutate(payload);
-          
-        }else{
-        
-        alert("MetaMask not installed");
-        }
+      // const currentAccount = await provider.getSigner([accounts[0]]).getAddress();
+
+      const signature = await provider
+        .getSigner(accounts[0])
+        .signMessage(message);
+
+      const payload = {
+        address: accounts[0].toLocaleLowerCase(),
+        signature: signature,
+        message,
+      };
+      walletMutate(payload);
+    } else {
+      alert("MetaMask not installed");
+    }
   };
 
   return (

@@ -53,16 +53,21 @@ const Signup = () => {
       });
 
     if (typeof window.ethereum !== "undefined") {
-      // address , signature , message, name
-      const message = "Sign this message to log in to our app";
+      // const message = "Sign this message to log in to our app";
       const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-      const currentAccount = await provider.getSigner().getAddress();
+      const message = "Sign this message to log in to our app";
 
-      const signature = await provider.getSigner().signMessage(message);
+      const accounts = await ethereum.request({
+        method: "eth_requestAccounts",
+      });
+
+      const signature = await provider
+        .getSigner(accounts[0])
+        .signMessage(message);
 
       const payload = {
-        address: currentAccount.toLocaleLowerCase(),
+        address: accounts[0].toLocaleLowerCase(),
         name: name,
         message,
         signature,
