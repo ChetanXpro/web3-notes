@@ -13,7 +13,7 @@ import pdfImage from "../../assets/pdflogo.png";
 import svgImage from "../../assets/svg.png";
 import docImage from "../../assets/docs.png";
 import { Popconfirm } from "antd";
-import {  useQueryClient } from "react-query";
+import { useQueryClient } from "react-query";
 
 import usePrivateApis from "../../hooks/usePrivateApis";
 const Notes = ({ name, url, re, id, size }) => {
@@ -107,7 +107,7 @@ const Notes = ({ name, url, re, id, size }) => {
             <Text className="truncate text-sm">{name}</Text>
           </div>
           <div className=" ">
-            <a href={url}>
+            <a href={url} download>
               <Tooltip label={`${size}`} placement="bottom">
                 <div className="button">
                   <div className="button-wrapper">

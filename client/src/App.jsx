@@ -13,8 +13,7 @@ import RequireAuth from "./components/RequireAuth";
 import Layout from "./components/Layout";
 import UploadFile from "./components/Upload/Upload";
 import NotesPage from "./components/NotesPage/NotesPage";
-import EntryPage from "./components/EntryPage/EntryPage";
-import EntryDashboard from "./components/EntryPage/EntryDashboard";
+
 import PublicNotes from "./components/PublicNotes/PublicNotes";
 import UploadPublicNotes from "./components/Admin/UploadPublicNotes";
 import RequireAdmin from "./components/RequireAdmin";
@@ -25,14 +24,12 @@ function App() {
     <Routes>
       //{" "}
       <Route path="/" element={<Layout />}>
-        <Route path="/home" element={<EntryDashboard />}>
-          <Route index element={<EntryPage />} />
-        </Route>
         <Route path="/sign_in" element={<Login />} />
         <Route path="/sign_up" element={<Signup />} />
+        <Route index element={<Home />} />
         <Route element={<RequireAuth />}>
           <Route path="/" element={<Dashboard />}>
-            <Route index element={<Home />} />
+            {/* <Route index element={<Home />} /> */}
             <Route path="setting" element={<Setting />} />
             <Route path="profile" element={<Profile />} />
             <Route path="profile/:id" element={<NotesPage />} />
