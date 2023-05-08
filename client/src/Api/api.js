@@ -7,7 +7,7 @@ const API_BASE_URL = "https://web3-notes.live";
 export const apiInstance = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000,
-  withCredentials: true,
+ 
 });
 
 export const apiPrivateInstance = axios.create({
