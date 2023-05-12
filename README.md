@@ -1,5 +1,6 @@
 # 👋 Web3 Notes
-<hr/>
+  <hr/>
+
 - Web3 Notes is a decentralized notes storing dapp, build on Spheron.
 
 - user can upload there notes in form of Pdf, txt , img files <br/>
