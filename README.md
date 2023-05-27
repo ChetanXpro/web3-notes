@@ -47,11 +47,6 @@
 
 ### Youtube demo video -> [Click here](https://www.youtube.com/watch?v=nL_3tIjX9-k)
 
-### [Live Demo](https://web3-frontend-fd09a5.spheron.app/)
-
-### [Api Demo](http://provider.palmito.duckdns.org:32748/)
-
-### Custom domain for api : https://web3-notes.live/
 
 <br/>
 
